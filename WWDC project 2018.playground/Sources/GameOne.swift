@@ -1,6 +1,7 @@
 
 import SpriteKit
 
+
 public struct CategoryBitMask {
     static let Ball: UInt32 = 0b1 << 0
     static let Block: UInt32 = 0b1 << 1
@@ -9,7 +10,7 @@ public struct CategoryBitMask {
 
 //
 
-var num = 0
+private var num = 0
 public func getColor() -> SKColor {
     switch num {
     case 0:
@@ -21,6 +22,11 @@ public func getColor() -> SKColor {
     default:
         return SKColor(red: 193 / 255, green: 52 / 255, blue: 155 / 255, alpha: 1)
     }
+}
+
+public func playSound(soudName: String,scen: SKScene){
+    let sound = SKAction.playSoundFileNamed(soudName, waitForCompletion: false)
+    scen.run(sound)
 }
 
 
@@ -58,7 +64,5 @@ public func BlockNode() -> SKSpriteNode {
     block.physicsBody!.restitution = 1
     return block
 }
-
-
 
 

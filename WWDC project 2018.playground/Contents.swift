@@ -28,6 +28,9 @@ class Scene: SKScene, SKPhysicsContactDelegate {
         static let Block: UInt32 = 0b1 << 1
     }
     
+    
+    
+    
     var score = 0
     
     var ball =  BallNode(point: CGPoint(x: 20, y: 20))
@@ -35,6 +38,7 @@ class Scene: SKScene, SKPhysicsContactDelegate {
     
     func didSmile() {
         ball.color = getColor()
+        playSound(soudName: "pongs", scen: self)
     }
     
     
@@ -81,15 +85,23 @@ class Scene: SKScene, SKPhysicsContactDelegate {
                 block.removeFromParent()
                 score += 20
                 label.text = "score \(score)"
-                
+                playSound(soudName: "PLINK", scen: self)
                 
             } else {
                 score -= 10
                 label.text = "score \(score)"
+                playSound(soudName: "POP", scen: self)
             }
         }
     }
 }
+
+
+
+
+
+
+
 
 
 
@@ -176,24 +188,6 @@ public class Visage: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     }
     
     
-    fileprivate func playSaund(){
-        let filename = "Saund"
-        let ext = "mp3"
-        
-        if let soundUrl = Bundle.main.url(forResource: filename, withExtension: ext) {
-            var soundId: SystemSoundID = 0
-            
-            AudioServicesCreateSystemSoundID(soundUrl as CFURL, &soundId)
-            
-            AudioServicesAddSystemSoundCompletion(soundId, nil, nil, { (soundId, clientData) -> Void in
-                AudioServicesDisposeSystemSoundID(soundId)
-            }, nil)
-            
-            AudioServicesPlaySystemSound(soundId)
-        }
-    }
-    
-    
     func faceDetection(){
         dispatchQueueML.async {
             if let sample = self.sampleBuffers {
@@ -220,7 +214,6 @@ public class Visage: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
                                 
                                 scene.didSmile()
                                 
-                                // self.playSaund()
                             } else {
                                 self.isSmile = true
                                 print(featureDetails)
@@ -235,9 +228,6 @@ public class Visage: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     
     
 }// end of class
-
-
-
 
 
 
