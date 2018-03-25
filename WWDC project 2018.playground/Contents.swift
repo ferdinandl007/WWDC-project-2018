@@ -1,14 +1,11 @@
 import Cocoa
 import AVFoundation
-import AVKit
-import QuartzCore
 import PlaygroundSupport
-import AudioToolbox
 import SpriteKit
 
 
 /*:
- # Kaleido♦️🔵🔶
+ # Ferdinand Loesch♦️🔵🔶
  ## The music-lovin' kaleidoscope.
  
  Kaleido uses `CAReplicatorLayers`, masks, `CoreAnimation` and `AVFoundation` to create a kaleidoscope visualizer that reacts to the beat of your favorite tracks.
@@ -23,21 +20,13 @@ import SpriteKit
 
 class Scene: SKScene, SKPhysicsContactDelegate {
     
-    struct CategoryBitMask {
-        static let Ball: UInt32 = 0b1 << 0
-        static let Block: UInt32 = 0b1 << 1
-    }
-    
-    
-    
-    
     var score = 0
-    
+    var isDifficult = true
     var ball =  BallNode(point: CGPoint(x: 20, y: 20))
     let label = Label(text: "score 0", positionX: 220, positionY: 1000)
     
     func didSmile() {
-        ball.color = getColor()
+        ball.color = getColor(difficult: isDifficult)
         playSound(soudName: "pongs", scen: self)
     }
     
@@ -61,7 +50,7 @@ class Scene: SKScene, SKPhysicsContactDelegate {
         ball.position = CGPoint(x: 0.5 * super.size.width, y: 0.5 * super.size.height)
         
         
-        ball.color = getColor()
+        ball.color = getColor(difficult: isDifficult)
         
         super.addChild(ball)
         
@@ -71,7 +60,7 @@ class Scene: SKScene, SKPhysicsContactDelegate {
             for x in 1...11 {
                 let b = block.copy() as! SKSpriteNode
                 b.position = CGPoint(x: (b.size.width + 10) * CGFloat(x), y: (b.size.height + 10) * CGFloat(y))
-                b.color = getColor()
+                b.color = getColor(difficult: isDifficult)
                 super.addChild(b)
             }
         }
@@ -106,6 +95,7 @@ class Scene: SKScene, SKPhysicsContactDelegate {
 
 
 let scene = Scene()
+scene.isDifficult = false
 
 public class Visage: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     
@@ -121,6 +111,8 @@ public class Visage: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     fileprivate let dispatchQueueML = DispatchQueue(label: "com.hw.dispatchqueueml")
     
     fileprivate var isSmile = true
+    fileprivate var images = [NSImage]()
+    
     
     
     
@@ -140,8 +132,13 @@ public class Visage: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     
     func endFaceDetection() {
         self.captureSession.stopRunning()
+        
     }
     
+ 
+  
+    
+   
     
     fileprivate func captureSetup () {
         var input : AVCaptureDeviceInput
@@ -161,6 +158,8 @@ public class Visage: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
                     }
                 }
             }
+           
+
             
             
             self.output.videoSettings = [kCVPixelBufferPixelFormatTypeKey as AnyHashable as! String: Int(kCVPixelFormatType_32BGRA)]
@@ -187,6 +186,8 @@ public class Visage: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         
     }
     
+   
+ 
     
     func faceDetection(){
         dispatchQueueML.async {
@@ -203,26 +204,27 @@ public class Visage: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
                 
                 for feature in features {
                     if let faceFeature = feature as? CIFaceFeature {
-                        let featureDetails = ["has smile: \(faceFeature.hasSmile)",
-                            "has closed left eye: \(faceFeature.leftEyeClosed)",
-                            "has closed right eye: \(faceFeature.rightEyeClosed)"]
+                      //  let featureDetails = ["has smile: \(faceFeature.hasSmile)",
+                          //  "has closed left eye: \(faceFeature.leftEyeClosed)",
+                           // "has closed right eye: \(faceFeature.rightEyeClosed)"]
                         
                         if self.isSmile == faceFeature.hasSmile {
                             if self.isSmile {
                                 self.isSmile = false
-                                print(featureDetails)
-                                
                                 scene.didSmile()
+                            
                                 
                             } else {
                                 self.isSmile = true
-                                print(featureDetails)
+                                
                             }
                         }
                     }
                 }//end of loop
             }//end of if let sample = self.sampleBuffers
+            
             self.faceDetection()
+            
         }
     }// end func
     
@@ -264,9 +266,6 @@ class SmileView: NSView {
 let frame = CGRect(x: 0, y: 0, width: 640.0, height: 360)
 let sView = SmileView(frame: frame)
 sView.alphaValue = 0.04
-
-
-
 
 
 scene.scaleMode = .aspectFit

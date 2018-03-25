@@ -3,22 +3,30 @@ import SpriteKit
 
 
 public struct CategoryBitMask {
-    static let Ball: UInt32 = 0b1 << 0
-    static let Block: UInt32 = 0b1 << 1
+    public static let Ball: UInt32 = 0b1 << 0
+    public static let Block: UInt32 = 0b1 << 1
 }
 
 
 //
 
-private var num = 0
-public func getColor() -> SKColor {
+public var num = 0
+public func getColor(difficult: Bool) -> SKColor {
     switch num {
     case 0:
         num = 1
         return SKColor(red: 193 / 255, green: 52 / 255, blue: 155 / 255, alpha: 1)
     case 1:
-        num = 0
+        if difficult{
+            num = 2
+        } else{
+            num = 0
+        }
         return SKColor(red: 76 / 255, green: 191 / 255, blue: 86 / 255, alpha: 1)
+        
+    case 2:
+        num = 0
+        return SKColor(red: 0, green: 175 / 255, blue: 202 / 255, alpha: 1)
     default:
         return SKColor(red: 193 / 255, green: 52 / 255, blue: 155 / 255, alpha: 1)
     }
@@ -39,7 +47,7 @@ public func BallNode(point: CGPoint) -> SKSpriteNode {
     ball.physicsBody!.friction = 0
     ball.physicsBody!.linearDamping = 0
     ball.physicsBody!.restitution = 1
-    ball.physicsBody!.velocity = CGVector(dx: 500, dy: 400)
+    ball.physicsBody!.velocity = CGVector(dx: 700, dy: 600)
     ball.position = point
     return ball
     
@@ -64,5 +72,17 @@ public func BlockNode() -> SKSpriteNode {
     block.physicsBody!.restitution = 1
     return block
 }
+
+//public func takePoto(viewToCapture: NSView) -> NSImage{
+//    let rep = viewToCapture.bitmapImageRepForCachingDisplay(in: viewToCapture.bounds)
+//    viewToCapture.cacheDisplay(in: viewToCapture.bounds, to: rep!)
+//    let img = NSImage(size: viewToCapture.bounds.size)
+//    img.addRepresentation(rep!)
+//    return img
+//}
+
+
+
+
 
 
