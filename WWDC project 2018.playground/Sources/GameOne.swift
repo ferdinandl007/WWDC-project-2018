@@ -47,16 +47,42 @@ public func BallNode(point: CGPoint) -> SKSpriteNode {
     ball.physicsBody!.friction = 0
     ball.physicsBody!.linearDamping = 0
     ball.physicsBody!.restitution = 1
-    ball.physicsBody!.velocity = CGVector(dx: 700, dy: 600)
     ball.position = point
     return ball
     
 }
 
-public func Label(text: String,positionX: CGFloat,positionY: CGFloat) -> SKLabelNode{
+public func addBlocks(row: Int,Difficult: Bool, Scene: SKScene) -> Int {
+    
+    var blockCount = 0
+    let block = SKSpriteNode(color: SKColor.white, size: CGSize(width: 150, height: 50))
+    
+    block.name = "Block"
+    block.physicsBody = SKPhysicsBody(rectangleOf: block.size)
+    block.physicsBody!.categoryBitMask = CategoryBitMask.Block
+    block.physicsBody!.isDynamic = false
+    block.physicsBody!.friction = 0
+    block.physicsBody!.restitution = 1
+ 
+    for y in 1...row {
+        for x in 1...11 {
+            let b = block.copy() as! SKSpriteNode
+            b.position = CGPoint(x: (b.size.width + 10) * CGFloat(x), y: (b.size.height + 10) * CGFloat(y))
+            b.color = getColor(difficult: Difficult)
+            Scene.addChild(b)
+            blockCount += 1
+            
+        }
+    }
+    return blockCount
+}
+
+
+
+public func Label(text: String,size: CGFloat,positionX: CGFloat,positionY: CGFloat) -> SKLabelNode{
     let label = SKLabelNode(fontNamed: "Chalkduster")
     label.text = text
-    label.fontSize = 65
+    label.fontSize = size
     label.fontColor = SKColor.white
     label.position = CGPoint(x: positionX, y: positionY)
     return label

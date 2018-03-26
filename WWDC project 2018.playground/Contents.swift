@@ -20,15 +20,37 @@ import SpriteKit
 
 class Scene: SKScene, SKPhysicsContactDelegate {
     
-    var score = 0
-    var isDifficult = true
-    var ball =  BallNode(point: CGPoint(x: 20, y: 20))
-    let label = Label(text: "score 0", positionX: 220, positionY: 1000)
+    private var score = 0
+    private var blockCount = 0
+    public var rows = 3
+    public var isDifficult = true
+    private var didGameStart = false
+    private var ball =  BallNode(point: CGPoint(x: 20, y: 20))
+    private let label = Label(text: "score 0",size: 65, positionX: 220, positionY: 1000)
+    public let facelabel = Label(text: "🤓",size: 500, positionX: 1920 * 0.5, positionY: 1080 * 0.5)
+    private let startLabel = Label(text: "smiled to begin 😊 ☞ 📸", size: 100, positionX: 1920 * 0.5, positionY: 1080 * 0.5)
     
-    func didSmile() {
-        ball.color = getColor(difficult: isDifficult)
-        playSound(soudName: "pongs", scen: self)
+    
+     func didSmile() {
+        if didGameStart{
+            ball.color = getColor(difficult: isDifficult)
+            playSound(soudName: "pongs", scen: self)
+        } else {
+            startGame()
+            didGameStart = true
+            label.isHidden = false
+            startLabel.isHidden = true
+            label.position = CGPoint(x: 200, y: 1000)
+            label.text = "score 0"
+        }
     }
+    
+    private func startGame(){
+        ball.physicsBody!.velocity = CGVector(dx: 700, dy: 600)
+        blockCount = addBlocks(row: rows, Difficult: isDifficult, Scene: self)
+        ball.isHidden = false
+    }
+    
     
     
     override func didMove(to view: SKView) {
@@ -37,9 +59,12 @@ class Scene: SKScene, SKPhysicsContactDelegate {
         super.physicsWorld.contactDelegate = self
         
         super.physicsWorld.gravity = CGVector(dx: 0, dy: 0)
-        
-        
+        facelabel.alpha = 0.1
+        facelabel.zPosition = -1
+        label.isHidden = true
+        super.addChild(facelabel)
         super.addChild(label)
+        super.addChild(startLabel)
         
         let sceneBound = SKPhysicsBody(edgeLoopFrom: super.frame)
         sceneBound.friction = 0
@@ -48,23 +73,16 @@ class Scene: SKScene, SKPhysicsContactDelegate {
         
         
         ball.position = CGPoint(x: 0.5 * super.size.width, y: 0.5 * super.size.height)
-        
-        
-        ball.color = getColor(difficult: isDifficult)
-        
         super.addChild(ball)
+        ball.color = getColor(difficult: isDifficult)
+        ball.isHidden = true
         
-        let block = BlockNode()
+       
         
-        for y in 1...3 {
-            for x in 1...11 {
-                let b = block.copy() as! SKSpriteNode
-                b.position = CGPoint(x: (b.size.width + 10) * CGFloat(x), y: (b.size.height + 10) * CGFloat(y))
-                b.color = getColor(difficult: isDifficult)
-                super.addChild(b)
-            }
-        }
     }
+    
+    
+
     
     
     func didBegin(_ contact: SKPhysicsContact) {
@@ -72,10 +90,22 @@ class Scene: SKScene, SKPhysicsContactDelegate {
             let block = contact.bodyB.node as! SKSpriteNode
             if block.color == ball.color {
                 block.removeFromParent()
+                print(blockCount)
                 score += 20
                 label.text = "score \(score)"
                 playSound(soudName: "PLINK", scen: self)
-                
+                blockCount  -= 1
+                if blockCount == 0 {
+                    label.position = CGPoint(x: 0.5 * self.size.width, y: 0.5 * self.size.height)
+                    label.text = "congratulations for completing your is score \(score)"
+                    startLabel.position = CGPoint(x: 0.5 * self.size.width, y: 0.5 * self.size.height - 200)
+                    startLabel.isHidden = false
+                    blockCount = 0
+                    didGameStart = false
+                    ball.physicsBody!.velocity = CGVector(dx: 0, dy: 0)
+                    ball.isHidden = true
+                    
+                }
             } else {
                 score -= 10
                 label.text = "score \(score)"
@@ -96,6 +126,7 @@ class Scene: SKScene, SKPhysicsContactDelegate {
 
 let scene = Scene()
 scene.isDifficult = false
+scene.rows = 1
 
 public class Visage: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     
@@ -108,13 +139,11 @@ public class Visage: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     fileprivate let notificationCenter : NotificationCenter = NotificationCenter.default
     fileprivate var captureLayer: CALayer = CALayer()
     fileprivate var sampleBuffers: CMSampleBuffer?
-    fileprivate let dispatchQueueML = DispatchQueue(label: "com.hw.dispatchqueueml")
+    fileprivate let dispatchQueue = DispatchQueue(label: "com.wwdc_project_2018")
+    
     
     fileprivate var isSmile = true
     fileprivate var images = [NSImage]()
-    
-    
-    
     
     override init() {
         super.init()
@@ -125,24 +154,21 @@ public class Visage: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         self.faceDetector = CIDetector(ofType: CIDetectorTypeFace, context: nil, options: faceDetectorOptions)
     }
     
-    func beginFaceDetection() {
+   public func beginFaceDetection() {
         self.captureSession.startRunning()
         
     }
     
-    func endFaceDetection() {
+   public func endFaceDetection() {
         self.captureSession.stopRunning()
         
     }
     
  
   
-    
-   
-    
     fileprivate func captureSetup () {
         var input : AVCaptureDeviceInput
-        if let devices : [AVCaptureDevice] = AVCaptureDevice.devices() as? [AVCaptureDevice] {
+        let devices : [AVCaptureDevice] = AVCaptureDevice.devices()
             for device in devices {
                 if device.hasMediaType(AVMediaType.video) && device.supportsSessionPreset(AVCaptureSession.Preset.vga640x480) {
                     do {
@@ -176,21 +202,20 @@ public class Visage: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
             visageCameraView.wantsLayer = true
             visageCameraView.layer = captureLayer
             
-        }
+        
     }
     
     
     
     public func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection){
         self.sampleBuffers = sampleBuffer
-        
     }
     
    
  
     
-    func faceDetection(){
-        dispatchQueueML.async {
+   public func faceDetection(){
+        dispatchQueue.async {
             if let sample = self.sampleBuffers {
                 
                 let pixelBuffer = CMSampleBufferGetImageBuffer(sample)
@@ -207,15 +232,19 @@ public class Visage: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
                       //  let featureDetails = ["has smile: \(faceFeature.hasSmile)",
                           //  "has closed left eye: \(faceFeature.leftEyeClosed)",
                            // "has closed right eye: \(faceFeature.rightEyeClosed)"]
+                      
+                        scene.facelabel.run(SKAction.move(to: CGPoint(x: faceFeature.mouthPosition.x + 300, y: faceFeature.mouthPosition.y + 300), duration: 0.07))
                         
                         if self.isSmile == faceFeature.hasSmile {
                             if self.isSmile {
                                 self.isSmile = false
                                 scene.didSmile()
-                            
+                                scene.facelabel.text = "😆"
+                                print("the user isSmile")
                                 
                             } else {
                                 self.isSmile = true
+                                scene.facelabel.text = "🤓"
                                 
                             }
                         }
@@ -224,7 +253,6 @@ public class Visage: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
             }//end of if let sample = self.sampleBuffers
             
             self.faceDetection()
-            
         }
     }// end func
     
@@ -259,9 +287,6 @@ class SmileView: NSView {
         fatalError("init(coder:) has not been implemented")
     }
 }
-
-//PlaygroundPage.current.liveView = view
-
 
 let frame = CGRect(x: 0, y: 0, width: 640.0, height: 360)
 let sView = SmileView(frame: frame)
