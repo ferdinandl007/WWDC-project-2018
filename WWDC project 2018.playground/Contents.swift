@@ -5,48 +5,87 @@ import SpriteKit
 
 
 /*:
- # Ferdinand Loesch♦️🔵🔶
- ## The music-lovin' kaleidoscope.
+ # Ferdinand Loesch 💻🌐📷
+ ## Smilelefy The smile game 😁
  
- Kaleido uses `CAReplicatorLayers`, masks, `CoreAnimation` and `AVFoundation` to create a kaleidoscope visualizer that reacts to the beat of your favorite tracks.
+ Smilelefy uses `SpriteKit`, `CIDetector` and `AVFoundation` to create a game where all you need is a smile! No hands are required throughout the game. I built this with accessibility in mind as I have a friend who is paraplegic. Therefore he cannot use his hands to interact so I came up with the solution for him to be able to play this game!
  
  ----
+ # How to play!
+ Use your Smile to change the colour of the ball
+ The colour of the ball has to match the colour of the block its colliding with to be able to remove it and gain 20 points. However if this is not the case the ball will bounce of and 10 points will be deducted.
+ The goal of the game is to remove all blocks with the highest score possible.
  
- ### Setup 🔧
+ ## Setup The Game Scene🔧
+
  */
-//#-hidden-code
-
-
-
 class Scene: SKScene, SKPhysicsContactDelegate {
     
+    // used to track the score
     private var score = 0
+    
+    // keeps track of how many blocks are currently present in the game
     private var blockCount = 0
+    
+    // set up the number of Block rows in the game
     public var rows = 3
+    
+    // used to see if it's difficult
     public var isDifficult = true
+    
+    // sets the speed in the game
+    public var ballSpeed = 100
+    
+    // use to check if the game has started
     private var didGameStart = false
+    
+    // initialises the ball Node
     private var ball =  BallNode(point: CGPoint(x: 20, y: 20))
+    
+    // initialises the score Label node
     private let label = Label(text: "score 0",size: 65, positionX: 220, positionY: 1000)
+    
+    // initialises the Emoji masking your face
     public let facelabel = Label(text: "🤓",size: 500, positionX: 1920 * 0.5, positionY: 1080 * 0.5)
+    
+    // initialises the startLabel
     private let startLabel = Label(text: "smiled to begin 😊 ☞ 📸", size: 100, positionX: 1920 * 0.5, positionY: 1080 * 0.5)
     
+    // use to trigger did smile from outside the class and handle the responsible action
+    public func didSmile() {
     
-     func didSmile() {
+        // it checks that the game has started
         if didGameStart{
+            
+            // if yes acceptable to the next colour
             ball.color = getColor(difficult: isDifficult)
+            
+            // played the pong sound to signalise that the colour has changed
             playSound(soudName: "pongs", scen: self)
+            
         } else {
+            // otherwise start again
             startGame()
+            
+            // tells the class the game has started
             didGameStart = true
+            
+            // presents the score label
             label.isHidden = false
+            
+            // hides the game started legal
             startLabel.isHidden = true
+            
+            // set the position of the score able to the top left corner
             label.position = CGPoint(x: 200, y: 1000)
+            
+            // sets the text of the score label
             label.text = "score 0"
         }
     }
     
     private func startGame(){
-        ball.physicsBody!.velocity = CGVector(dx: 700, dy: 600)
+        ball.physicsBody!.velocity = CGVector(dx: 7 * ballSpeed, dy: 6 * ballSpeed)
         blockCount = addBlocks(row: rows, Difficult: isDifficult, Scene: self)
         ball.isHidden = false
     }
@@ -73,9 +112,9 @@ class Scene: SKScene, SKPhysicsContactDelegate {
         
         
         ball.position = CGPoint(x: 0.5 * super.size.width, y: 0.5 * super.size.height)
-        super.addChild(ball)
         ball.color = getColor(difficult: isDifficult)
         ball.isHidden = true
+        super.addChild(ball)
         
        
         
@@ -121,12 +160,22 @@ class Scene: SKScene, SKPhysicsContactDelegate {
 
 
 
-
-
+/*:
+ ## initialising the game
+  ----
+ Try changing difficult too true you will see three colours instead of two now.
+ 
+ Also try changing the roads and the speed to modify the game.y
+ 
+ */
 
 let scene = Scene()
+// set difficulty level here
 scene.isDifficult = false
-scene.rows = 1
+// set the number of rows in the game
+scene.rows = 3
+// set the speed of the ball here!
+scene.ballSpeed = 100
 
 public class Visage: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     

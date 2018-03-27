@@ -40,6 +40,7 @@ public func playSound(soudName: String,scen: SKScene){
 
 public func BallNode(point: CGPoint) -> SKSpriteNode {
     let ball = SKSpriteNode(color: SKColor.white, size: CGSize(width: 50, height: 50))
+    
     ball.physicsBody = SKPhysicsBody(rectangleOf: ball.size)
     ball.physicsBody!.allowsRotation = false
     ball.physicsBody!.categoryBitMask = CategoryBitMask.Ball
