@@ -233,7 +233,7 @@ class Scene: SKScene, SKPhysicsContactDelegate {
  # Playtime💻👾
  ## initialising the game
   ----
- Try changing difficult too true you will see three colours instead of two now.
+ Try changing difficult to true you will see three colours instead of two now.
  
  In addition try changing the Rows and the speed this will modify the game to make it harder or easier
  
@@ -242,7 +242,7 @@ class Scene: SKScene, SKPhysicsContactDelegate {
 let scene = Scene()
 
 // set difficulty level here
-scene.isDifficult = true
+scene.isDifficult = false
 
 // set the number of rows in the game
 scene.rows = 3
