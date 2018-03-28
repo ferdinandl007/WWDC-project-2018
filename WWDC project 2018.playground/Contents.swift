@@ -6,13 +6,15 @@ import SpriteKit
  # By Ferdinand Loesch 💻🌐📷
  ## Smilelefy The smile game 😁
  
- Smilelefy uses `SpriteKit`, `CIDetector` and `AVFoundation` to create a game where all you need is a smile! No hands are required throughout the game. I built this with accessibility in mind as I have a friend who is paraplegic. Therefore he cannot use his hands to interact so I came up with the solution for him to be able to play this game!
+ Smilelefy uses `Cocoa`, `SpriteKit`, `CIDetector` and `AVFoundation` to create a game where all you need is a smile! No hands are required throughout the game. I built this with accessibility in mind as I have a friend who is paraplegic. Therefore he cannot use his hands to interact so I came up with the solution for him to be able to play this game!
  
  ----
  # How to play!
  Use your Smile to change the colour of the ball. Also try to keep a neutral face if you are not planning to change the colour.
  The colour of the ball has to match the colour of the block its colliding with. To be able to remove it and gain 20 points. However if this is not the case the ball will bounce off and 10 points will be deducted.
  The goal of the game is to remove all blocks with the highest score possible.
+ 
+ I recommend  to play the game at 70% volume to enjoy the background music and audio feedback😉
  
 ### Setup The Game Scene🔧
 
@@ -95,6 +97,9 @@ class Scene: SKScene, SKPhysicsContactDelegate {
         // places the blocks  on the scene as well as return the number of blocks to block count
         blockCount = addBlocks(row: rows, Difficult: isDifficult, Scene: self)
         
+        // set the position of the ball to the middle of the scene
+        ball.position = CGPoint(x: 0.5 * super.size.width, y: 0.5 * super.size.height)
+        
         //makes the ball visible
         ball.isHidden = false
     }
@@ -124,6 +129,9 @@ class Scene: SKScene, SKPhysicsContactDelegate {
         // hides the score label
         label.isHidden = true
         
+        // background music
+        playBackgroundMusic(scene: self)
+        
         //  this adds the emoji,score level and the  start label to the scene
         super.addChild(facelabel)
         super.addChild(label)
@@ -143,9 +151,6 @@ class Scene: SKScene, SKPhysicsContactDelegate {
         sceneBound.restitution = 1
         //  now we add sceneBound to a scene as a physics body
         super.physicsBody = sceneBound
-        
-        // set the position of the ball to the middle of the scene
-        ball.position = CGPoint(x: 0.5 * super.size.width, y: 0.5 * super.size.height)
         
         // gets a initial colour for the ball
         ball.color = getColor(difficult: isDifficult)
@@ -268,10 +273,10 @@ public class Visage: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     // assigning videoDataOutputQueue as DispatchQueue which is an optional
     fileprivate var videoDataOutputQueue : DispatchQueue?
     
-    // initialising output  as a capture video output
+    // initialising output as a capture video output
     fileprivate var output = AVCaptureVideoDataOutput()
     
-    //  assigning the camera preview layer
+    // assigning the camera preview layer
     fileprivate var cameraPreviewLayer : AVCaptureVideoPreviewLayer?
     //  initialise  AVCaptureSession
     fileprivate var captureSession : AVCaptureSession = AVCaptureSession()
@@ -514,6 +519,8 @@ class SmileView: NSView {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
+
 
 /*:
 ----

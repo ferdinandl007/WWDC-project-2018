@@ -1,15 +1,15 @@
 
 import SpriteKit
 
-
+// struct To store  the  category bit masks
 public struct CategoryBitMask {
     public static let Ball: UInt32 = 0b1 << 0
     public static let Block: UInt32 = 0b1 << 1
 }
 
 
-//
 
+//  this method  returns  the next colour  in the switch statement
 public var num = 0
 public func getColor(difficult: Bool) -> SKColor {
     switch num {
@@ -32,12 +32,20 @@ public func getColor(difficult: Bool) -> SKColor {
     }
 }
 
+
+//   method to play the sound
 public func playSound(soudName: String,scen: SKScene){
     let sound = SKAction.playSoundFileNamed(soudName, waitForCompletion: false)
     scen.run(sound)
 }
 
+// method to Play background music
+public func playBackgroundMusic(scene: SKScene){
+    scene.run(SKAction.repeatForever(SKAction.playSoundFileNamed("song", waitForCompletion: true)))
+}
 
+
+//  method to return a ball note already configured
 public func BallNode(point: CGPoint) -> SKSpriteNode {
     let ball = SKSpriteNode(color: SKColor.white, size: CGSize(width: 50, height: 50))
     
@@ -53,6 +61,7 @@ public func BallNode(point: CGPoint) -> SKSpriteNode {
     
 }
 
+//  method  to set up  the block blockade
 public func addBlocks(row: Int,Difficult: Bool, Scene: SKScene) -> Int {
     
     var blockCount = 0
@@ -79,7 +88,7 @@ public func addBlocks(row: Int,Difficult: Bool, Scene: SKScene) -> Int {
 }
 
 
-
+// method to return a configured label
 public func Label(text: String,size: CGFloat,positionX: CGFloat,positionY: CGFloat) -> SKLabelNode{
     let label = SKLabelNode(fontNamed: "Chalkduster")
     label.text = text
@@ -88,28 +97,6 @@ public func Label(text: String,size: CGFloat,positionX: CGFloat,positionY: CGFlo
     label.position = CGPoint(x: positionX, y: positionY)
     return label
 }
-
-public func BlockNode() -> SKSpriteNode {
-    let block = SKSpriteNode(color: SKColor.white, size: CGSize(width: 150, height: 50))
-    block.name = "Block"
-    block.physicsBody = SKPhysicsBody(rectangleOf: block.size)
-    block.physicsBody!.categoryBitMask = CategoryBitMask.Block
-    block.physicsBody!.isDynamic = false
-    block.physicsBody!.friction = 0
-    block.physicsBody!.restitution = 1
-    return block
-}
-
-//public func takePoto(viewToCapture: NSView) -> NSImage{
-//    let rep = viewToCapture.bitmapImageRepForCachingDisplay(in: viewToCapture.bounds)
-//    viewToCapture.cacheDisplay(in: viewToCapture.bounds, to: rep!)
-//    let img = NSImage(size: viewToCapture.bounds.size)
-//    img.addRepresentation(rep!)
-//    return img
-//}
-
-
-
 
 
 
