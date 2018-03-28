@@ -8,6 +8,7 @@ import SpriteKit
  
  Smilelefy uses `Cocoa`, `SpriteKit`, `CIDetector` and `AVFoundation` to create a game where all you need is a smile! No hands are required throughout the game. I built this with accessibility in mind as I have a friend who is paraplegic. Therefore he cannot use his hands to interact so I came up with the solution for him to be able to play this game!
  
+ 
  ----
  # How to play!
  Use your Smile to change the colour of the ball. Also try to keep a neutral face if you are not planning to change the colour.
