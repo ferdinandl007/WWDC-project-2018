@@ -1,4 +1,4 @@
-# this project was awarded a Scholarship at WWDC 2018!
+# This project was awarded a Scholarship at WWDC 2018!
 # By Ferdinand Loesch 💻🌐📷
  ## Smilelefy The smile game 😁
  
