@@ -90,7 +90,7 @@ public func addBlocks(row: Int,Difficult: Bool, Scene: SKScene) -> Int {
 
 // method to return a configured label
 public func Label(text: String,size: CGFloat,positionX: CGFloat,positionY: CGFloat) -> SKLabelNode{
-    let label = SKLabelNode(fontNamed: "Chalkduster")
+    let label = SKLabelNode(fontNamed: "Helvetica-Bold")
     label.text = text
     label.fontSize = size
     label.fontColor = SKColor.white

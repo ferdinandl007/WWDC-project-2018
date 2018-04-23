@@ -206,7 +206,7 @@ class Scene: SKScene, SKPhysicsContactDelegate {
                     //  updates the text to the label
                     label.text = "congratulations for completing your is score \(score)"
                     
-                    //  said the position of the start label to 200 dots down from the centre
+                    //  Sets the position of the start label to 200 dots down from the centre
                     startLabel.position = CGPoint(x: 0.5 * self.size.width, y: 0.5 * self.size.height - 200)
                     
                     //  makes the start label visible
@@ -254,7 +254,7 @@ scene.isDifficult = false
 scene.rows = 3
 
 // set the speed of the ball here!
-scene.ballSpeed = 100
+scene.ballSpeed = 120
 
 /*:
  #  Face and Smiled tracking
@@ -406,7 +406,7 @@ public class Visage: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     
         // setting up dispatchQueue
         dispatchQueue.async {
-            
+          
             //  checking if sample buffer  is equal to nil if not assign its value to sample
             if let sample = self.sampleBuffers {
                 
@@ -468,11 +468,13 @@ public class Visage: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
                     }
                 }
             }
+ 
             
             // checks if face detection should be terminated
             if !self.faceTrackingEnds{
             self.faceDetection()
             }
+
         }
     }
 }// end of class
@@ -535,12 +537,12 @@ let frame = CGRect(x: 0, y: 0, width: 640.0, height: 360)
 let sView = SmileView(frame: frame)
 
 // Sets the opacity of our camera view. Try changing it to make the camera view more or less opaque
-sView.alphaValue = 0.04
+sView.alphaValue = 0.05
 
-//  sets the aspect of the view to fill
+// sets the aspect of the view to fill
 scene.scaleMode = .aspectFit
 
-//  initial eyes is SKView to view  and set the size to 640x360  we get this value from frame
+// initial eyes is SKView to view  and set the size to 640x360  we get this value from frame
 let view = SKView(frame: frame)
 
 //  now we present our scene in a newly created view
